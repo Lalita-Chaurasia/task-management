@@ -2,7 +2,6 @@ package com.taskmanager.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.taskmanager.entity.Task;
@@ -11,9 +10,11 @@ import com.taskmanager.repository.TaskRepository;
 @Service
 public class TaskService {
 
-    @Autowired
-    private TaskRepository repo;
+	private final TaskRepository repo;
 
+    public TaskService(TaskRepository repo) {
+        this.repo = repo;
+    }
     public Task addTask(Task task) {
         return repo.save(task);
     }
@@ -38,7 +39,12 @@ public class TaskService {
         return null;
     }
 
-    public void deleteTask(Long id) {
-        repo.deleteById(id);
+    public boolean deleteTask(Long id) {
+        if(repo.existsById(id)) {
+            repo.deleteById(id);
+            return true;
+        }
+        return false;
     }
-}
+    }
+
